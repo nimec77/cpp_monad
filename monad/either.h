@@ -11,12 +11,13 @@
 namespace monad {
     template<typename L, typename R>
     class Either {
-    public:
+    protected:
         union {
             L left_value;
             R right_value;
         };
 
+    public:
         bool const isLeft = false;
 
         constexpr explicit Either(Left<L> const &l) : left_value{l.value}, isLeft{true} {};
@@ -42,6 +43,40 @@ namespace monad {
                 right_value.~R();
             }
         }
+
+        static constexpr auto LeftOf(L const &l) {
+            return Either<L, R>(monad::left(l));
+        }
+
+        static constexpr auto RightOf(R const &r) {
+            return Either<L, R>(monad::right(r));
+        }
+
+        static auto LeftOf(L &&l) {
+            return Either<L, R>(monad::left(l));
+        }
+
+        static auto RightOf(R &&r) {
+            return Either<L, R>(monad::right(r));
+        }
+
+        template<typename LeftF, typename RightF>
+        auto Fold(LeftF const &leftCase, RightF const &rightCase) const
+                -> decltype(isLeft ? leftCase(left_value) : rightCase(right_value)) {
+            return isLeft ? leftCase(left_value) : rightCase(right_value);
+        }
+
+        template<typename LeftF>
+        auto GetOrElse(LeftF const &leftCase) const
+                -> decltype(isLeft ? leftCase(left_value) : right_value) {
+            return isLeft ? leftCase(left_value) : right_value;
+        }
+
+        auto GetOrDefault(R value) {
+            return isLeft ? value : right_value;
+        }
+
+    private:
     };
 }// namespace monad
 
