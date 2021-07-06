@@ -30,6 +30,10 @@ TEST(RightTest, CreateRightTest) {
     auto testClass = TestClass(40, 2);
     auto right_class = monad::right(testClass);
     ASSERT_EQ(typeid(right_class.value), typeid(TestClass));
-
     ASSERT_EQ(right_class.value.add(), 42);
+
+    auto  str2 = &"Test string";
+    auto right_char = monad::right(&"Test string");
+    ASSERT_EQ(typeid(right_char.value), typeid(str2));
+    ASSERT_STREQ(*right_char.value, *str2);
 }

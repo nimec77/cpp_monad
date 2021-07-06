@@ -33,23 +33,22 @@ TEST(EitherTest, EitherFoldTest) {
     auto result = either.Fold(
             [](auto l) { return -1; },
             [](auto r) { return r; });
-    ASSERT_EQ(42, result);
+    ASSERT_EQ(answer, result);
 }
 
 TEST(EitherTest, EitherGetOrElseTest) {
-    auto answer = 42;
-    auto either = Either<std::exception, int>::RightOf(answer);
+    auto either = Either<std::exception, int>{right(42)};
 
-    auto result = either.GetOrElse([](auto l) { return -1;});
+    auto result = either.GetOrElse([](auto l) { return -1; });
     ASSERT_EQ(result, 42);
-    result = either.GetOrDefault(-1);
+    result = either | -1;
     ASSERT_EQ(result, 42);
 
     auto str = "Test";
-    auto e = Either<std::exception, const char*>::RightOf(str);
+    auto e = Either<std::exception, const char *>::RightOf(str);
 
-    auto result_str = e.GetOrElse([](auto l) { return "Error!";});
+    auto result_str = e.GetOrElse([](auto l) { return "Error!"; });
     ASSERT_STREQ(result_str, str);
-    result_str = e.GetOrDefault("Error!");
+    result_str = e | "Error!";
     ASSERT_STREQ(result_str, str);
 }

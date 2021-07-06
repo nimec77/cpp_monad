@@ -45,19 +45,20 @@ namespace monad {
         }
 
         static constexpr auto LeftOf(L const &l) {
-            return Either<L, R>(monad::left(l));
+            return Either<L, R>{monad::left(l)};
         }
 
         static constexpr auto RightOf(R const &r) {
-            return Either<L, R>(monad::right(r));
+            return Either<L, R>{monad::right(r)};
         }
 
+
         static auto LeftOf(L &&l) {
-            return Either<L, R>(monad::left(l));
+            return Either<L, R>{monad::left(l)};
         }
 
         static auto RightOf(R &&r) {
-            return Either<L, R>(monad::right(r));
+            return Either<L, R>{monad::right(r)};
         }
 
         template<typename LeftF, typename RightF>
@@ -72,7 +73,7 @@ namespace monad {
             return isLeft ? leftCase(left_value) : right_value;
         }
 
-        auto GetOrDefault(R value) {
+        auto operator|(const R value) {
             return isLeft ? value : right_value;
         }
 
