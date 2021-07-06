@@ -18,17 +18,17 @@ private:
 };
 
 TEST(RightTest, CreateRightTest) {
-    auto right_int = right(6 * 7);
+    auto right_int = monad::right(6 * 7);
     ASSERT_EQ(typeid(right_int.value), typeid(int));
     ASSERT_EQ(right_int.value, 42);
 
     auto str = std::string{"Test value"};
-    auto right_str = right(str);
+    auto right_str = monad::right(str);
     ASSERT_EQ(typeid(right_str.value), typeid(std::string));
     ASSERT_STREQ(right_str.value.c_str(), str.c_str());
 
     auto testClass = TestClass(40, 2);
-    auto right_class = right(testClass);
+    auto right_class = monad::right(testClass);
     ASSERT_EQ(typeid(right_class.value), typeid(TestClass));
 
     ASSERT_EQ(right_class.value.add(), 42);

@@ -1,8 +1,8 @@
 #include <iostream>
-#include <left.h>
+#include <right.h>
 
 int main() {
-    auto left_int = monad::left(1);
+    auto right_int =
     std::cout << "Left Test:" << left_int.value << std::endl;
 
     return 0;

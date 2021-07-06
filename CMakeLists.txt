@@ -21,6 +21,7 @@ enable_testing()
 set(SRC_TESTS
         test/left_test.cpp
         test/right_test.cpp
+        test/either_test.cpp
         test/main_test.cpp
         )
 

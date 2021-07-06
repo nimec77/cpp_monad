@@ -7,19 +7,21 @@
 
 #include <memory>
 
-template<typename T>
-struct Right {
-    T value;
-};
+namespace monad {
+    template<typename T>
+    struct Right {
+        T value;
+    };
 
-template<typename T>
-constexpr Right<T> right(T const &x) {
-    return {x};
-}
+    template<typename T>
+    constexpr Right<T> right(T const &x) {
+        return {x};
+    }
 
-template<typename T>
-Right<T> right(T &&x) {
-    return {std::forward<T>(x)};
+    template<typename T>
+    Right<T> right(T &&x) {
+        return {std::forward<T>(x)};
+    }
 }
 
 #endif//CPP_MONAD_RIGHT_H
