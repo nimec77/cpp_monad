@@ -169,3 +169,22 @@ TEST(EitherTest, EitherWhenRightTest) {
 
     FAIL();
 }
+
+TEST(EitherTest, EitherMapTest) {
+    const auto kMessage = "Error message!";
+    auto either = Either<std::runtime_error, std::string>{monad::left(std::runtime_error(kMessage))};
+
+    ASSERT_FALSE(either);
+
+    auto result = either.Map([either](auto e) {
+        EXPECT_TRUE(e.isLeft);
+        EXPECT_EQ(typeid(e), typeid(either));
+
+        return Either<std::exception, int>{monad::right(42)};
+    });
+
+    ASSERT_EQ(typeid(result), typeid(Either<std::exception, int>));
+    ASSERT_TRUE(result);
+
+    ASSERT_EQ(result | 0, 42);
+}

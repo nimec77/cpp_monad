@@ -128,6 +128,12 @@ namespace monad {
             return isLeft ? NextEither{monad::left(left_value)} : rightCase(right_value);
         }
 
+        template<typename F>
+        auto Map(F const &mapF) const
+                -> decltype(mapF(*this)) {
+            return mapF(*this);
+        }
+
         constexpr explicit operator bool() const { return !isLeft; }
 
     private:
