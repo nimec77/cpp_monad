@@ -22,7 +22,6 @@ namespace monad {
     Left<T> left(T &&x) {
         return {std::forward<T>(x)};
     }
-
 }// namespace monad
 
 #endif//CPP_MONAD_LEFT_H

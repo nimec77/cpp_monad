@@ -18,6 +18,9 @@ namespace monad {
         };
 
     public:
+        const Left<nullptr_t> leftEmpty = Left<nullptr_t>{nullptr};
+        const Right<nullptr_t> rightEmpty = Right<nullptr_t>{nullptr};
+
         bool const isLeft = false;
 
         constexpr explicit Either(Left<L> const &l) : left_value{l.value}, isLeft{true} {};
@@ -67,6 +70,12 @@ namespace monad {
             return isLeft ? leftCase(left_value) : rightCase(right_value);
         }
 
+
+        template<typename LeftF, typename RightF>
+        void When(LeftF const &leftCase, RightF const &rightCase) {
+            isLeft ? leftCase(left_value) : rightCase(right_value);
+        }
+
         template<typename LeftF>
         auto GetOrElse(LeftF const &leftCase) const
                 -> decltype(isLeft ? leftCase(left_value) : right_value) {
@@ -77,8 +86,58 @@ namespace monad {
             return isLeft ? value : right_value;
         }
 
+        template<typename F>
+        auto LeftMap(F const &leftCase) const
+                -> Either<decltype(leftCase(left_value)), R> {
+            using NextEither = Either<decltype(leftCase(left_value)), R>;
+            return isLeft ? NextEither{monad::left(leftCase(left_value))} : NextEither{monad::right(right_value)};
+        };
+
+        template<typename F>
+        auto LeftFlatMap(F const &leftCase) const
+                -> decltype(leftCase(left_value)) {
+            using NextEither = decltype(leftCase(left_value));
+            return isLeft ? leftCase(left_value) : NextEither{monad::right(right_value)};
+        }
+
+        template<typename F>
+        auto RightMap(F const &rightCase) const
+                -> Either<L, decltype(rightCase(right_value))> {
+            using NextEither = Either<L, decltype(rightCase(right_value))>;
+            return isLeft ? NextEither{monad::left(left_value)} : NextEither{monad::right(rightCase(right_value))};
+        };
+
+        template<typename F>
+        auto RightFlatMap(F const &rightCase) const
+                -> decltype(rightCase(right_value)) {
+            using NextEither = decltype(rightCase(right_value));
+            return isLeft ? NextEither{monad::left(left_value)} : rightCase(right_value);
+        }
+
+        constexpr explicit operator bool() const { return !isLeft; }
+
     private:
     };
+
+    template<typename L, typename R>
+    bool operator==(Either<L, R> const &a, Either<L, R> const &b) {
+        if (a.isLeft) {
+            if (b.isLeft) {
+                return a.left_value == b.left_value;
+            }
+        } else {
+            if (!b.isLeft) {
+                return a.right_value == b.right_value;
+            }
+        }
+
+        return false;
+    }
+
+    template<typename L, typename R>
+    bool operator!=(Either<L, R> const &a, Either<L, R> const &b) {
+        return !(a == b);
+    }
 }// namespace monad
 
 
