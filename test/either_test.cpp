@@ -134,8 +134,11 @@ TEST(EitherTest, EitherLeftFlatMapTest) {
                 EXPECT_EQ(typeid(l), typeid(std::invalid_argument));
                 auto msg = l.what();
                 EXPECT_TRUE(strcmp(msg, kNewMessage) == 0);
+                std::exit(0);
             },
             [](const auto r) {});
+
+    FAIL();
 }
 
 TEST(EitherTest, EitherWhenLeftTest) {
@@ -148,7 +151,10 @@ TEST(EitherTest, EitherWhenLeftTest) {
         ASSERT_EQ(typeid(l), typeid(std::runtime_error));
         auto msg = l.what();
         ASSERT_STREQ(msg, kMessage);
+        std::exit(0);
     });
+
+    FAIL();
 }
 
 TEST(EitherTest, EitherWhenRightTest) {
@@ -158,5 +164,8 @@ TEST(EitherTest, EitherWhenRightTest) {
 
     either.WhenRight([](const auto r) {
         ASSERT_EQ(r, 42);
+        std::exit(0);
     });
+
+    FAIL();
 }
