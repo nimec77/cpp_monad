@@ -118,23 +118,45 @@ TEST(EitherTest, EitherLeftFlatMapTest) {
     ASSERT_FALSE(either);
 
     auto new_either = either.LeftFlatMap([kMessage, kNewMessage](const auto l) {
-          EXPECT_EQ(typeid(l), typeid(std::runtime_error));
-          auto msg = l.what();
-          EXPECT_TRUE(strcmp(msg, kMessage) == 0);
+        EXPECT_EQ(typeid(l), typeid(std::runtime_error));
+        auto msg = l.what();
+        EXPECT_TRUE(strcmp(msg, kMessage) == 0);
 
-          auto new_l = std::invalid_argument(kNewMessage);
+        auto new_l = std::invalid_argument(kNewMessage);
 
-          return Either<std::invalid_argument, std::string>::LeftOf(new_l);
+        return Either<std::invalid_argument, std::string>::LeftOf(new_l);
     });
 
     ASSERT_FALSE(new_either);
 
     new_either.When(
             [kNewMessage](const auto l) {
-              EXPECT_EQ(typeid(l), typeid(std::invalid_argument));
-              auto msg = l.what();
-              EXPECT_TRUE(strcmp(msg, kNewMessage) == 0);
+                EXPECT_EQ(typeid(l), typeid(std::invalid_argument));
+                auto msg = l.what();
+                EXPECT_TRUE(strcmp(msg, kNewMessage) == 0);
             },
             [](const auto r) {});
+}
 
+TEST(EitherTest, EitherWhenLeftTest) {
+    const auto kMessage = "Error message!";
+    auto either = Either<std::runtime_error, std::string>{monad::left(std::runtime_error(kMessage))};
+
+    ASSERT_FALSE(either);
+
+    either.WhenLeft([kMessage](const auto l) {
+        ASSERT_EQ(typeid(l), typeid(std::runtime_error));
+        auto msg = l.what();
+        ASSERT_STREQ(msg, kMessage);
+    });
+}
+
+TEST(EitherTest, EitherWhenRightTest) {
+    auto either = Either<std::exception, int>{monad::right(42)};
+
+    ASSERT_TRUE(either);
+
+    either.WhenRight([](const auto r) {
+        ASSERT_EQ(r, 42);
+    });
 }

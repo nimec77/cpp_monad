@@ -76,6 +76,20 @@ namespace monad {
             isLeft ? leftCase(left_value) : rightCase(right_value);
         }
 
+        template<typename F>
+        void WhenLeft(F const &leftCase) {
+            if (isLeft) {
+                leftCase(left_value);
+            }
+        }
+
+        template<typename F>
+        void WhenRight(F const &rightCase) {
+            if (!isLeft) {
+                rightCase(right_value);
+            }
+        }
+
         template<typename LeftF>
         auto GetOrElse(LeftF const &leftCase) const
                 -> decltype(isLeft ? leftCase(left_value) : right_value) {
