@@ -8,29 +8,29 @@
 using namespace monad;
 
 TEST(EitherTest, CreateEitherFromLeftTest) {
-    auto left_exception = left(std::invalid_argument("Test exception"));
-    auto either = Either<std::invalid_argument, int>{left_exception};
+    const auto left_exception = left(std::invalid_argument("Test exception"));
+    const auto either = Either<std::invalid_argument, int>{left_exception};
     ASSERT_FALSE(either);
 
-    auto e = Either<std::invalid_argument, int>::LeftOf(left_exception.value);
+    const auto e = Either<std::invalid_argument, int>::LeftOf(left_exception.value);
     ASSERT_FALSE(e);
 }
 
 TEST(EitherTest, CreateEitherFromRightTest) {
-    auto right_int = monad::right(6 * 7);
-    auto either = Either<std::exception, int>{right_int};
+    const auto right_int = monad::right(6 * 7);
+    const auto either = Either<std::exception, int>{right_int};
     ASSERT_TRUE(either);
 
-    auto str = std::string{"Test value"};
-    auto e = Either<std::exception, std::string>::RightOf(str);
+    const auto str = std::string{"Test value"};
+    const auto e = Either<std::exception, std::string>::RightOf(str);
     ASSERT_TRUE(e);
 }
 
 TEST(EitherTest, EitherFoldTest) {
-    auto answer = 42;
-    auto either = Either<std::exception, int>::RightOf(answer);
+    const auto answer = 42;
+    const auto either = Either<std::exception, int>::RightOf(answer);
 
-    auto result = either.Fold(
+    const auto result = either.Fold(
             [](const auto l) { return -1; },
             [](const auto r) { return r; });
     ASSERT_EQ(answer, result);
@@ -44,7 +44,7 @@ TEST(EitherTest, EitherGetOrElseTest) {
     result = either | -1;
     ASSERT_EQ(result, 42);
 
-    auto str = "Test";
+    const auto str = "Test";
     auto e = Either<std::exception, const char *>::RightOf(str);
 
     auto result_str = e.GetOrElse([](auto l) { return "Error!"; });
@@ -54,7 +54,7 @@ TEST(EitherTest, EitherGetOrElseTest) {
 }
 
 TEST(EitherTest, EitherRightMapTest) {
-    auto either = Either<std::exception, int>{monad::right(6)};
+    const auto either = Either<std::exception, int>{monad::right(6)};
 
     ASSERT_TRUE(either);
 
@@ -67,10 +67,10 @@ TEST(EitherTest, EitherRightMapTest) {
 }
 
 TEST(EitherTest, EitherLeftMapTest) {
-    const auto kMessage = "Error message!";
-    const auto kNewMessage = "New error message!";
-    auto error = std::runtime_error(kMessage);
-    auto either = Either<std::runtime_error, int>::LeftOf(error);
+    constexpr auto kMessage = "Error message!";
+    constexpr auto kNewMessage = "New error message!";
+    const auto error = std::runtime_error(kMessage);
+    const auto either = Either<std::runtime_error, int>::LeftOf(error);
 
     ASSERT_FALSE(either);
 
@@ -93,8 +93,8 @@ TEST(EitherTest, EitherLeftMapTest) {
 }
 
 TEST(EitherTest, EitherRightFlatMapTest) {
-    const auto kMessage = "Message";
-    auto either = Either<std::exception, int>{monad::right(42)};
+    constexpr auto kMessage = "Message";
+    const auto either = Either<std::exception, int>{monad::right(42)};
 
     ASSERT_TRUE(either);
 
@@ -111,9 +111,9 @@ TEST(EitherTest, EitherRightFlatMapTest) {
 }
 
 TEST(EitherTest, EitherLeftFlatMapTest) {
-    const auto kMessage = "Error message!";
-    const auto kNewMessage = "New Error message!";
-    auto either = Either<std::runtime_error, std::string>{monad::left(std::runtime_error(kMessage))};
+    constexpr auto kMessage = "Error message!";
+    constexpr auto kNewMessage = "New Error message!";
+    const auto either = Either<std::runtime_error, std::string>{monad::left(std::runtime_error(kMessage))};
 
     ASSERT_FALSE(either);
 
@@ -142,7 +142,7 @@ TEST(EitherTest, EitherLeftFlatMapTest) {
 }
 
 TEST(EitherTest, EitherWhenLeftTest) {
-    const auto kMessage = "Error message!";
+    constexpr auto kMessage = "Error message!";
     auto either = Either<std::runtime_error, std::string>{monad::left(std::runtime_error(kMessage))};
 
     ASSERT_FALSE(either);
@@ -171,7 +171,7 @@ TEST(EitherTest, EitherWhenRightTest) {
 }
 
 TEST(EitherTest, EitherMapTest) {
-    const auto kMessage = "Error message!";
+    constexpr auto kMessage = "Error message!";
     auto either = Either<std::runtime_error, std::string>{monad::left(std::runtime_error(kMessage))};
 
     ASSERT_FALSE(either);
