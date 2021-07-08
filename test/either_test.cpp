@@ -39,7 +39,7 @@ TEST(EitherTest, EitherFoldTest) {
 TEST(EitherTest, EitherGetOrElseTest) {
     auto either = Either<std::exception, int>{right(42)};
 
-    auto result = either.GetOrElse([](auto l) { return -1; });
+    auto result = either.GetOrElse([](const auto l) { return -1; });
     ASSERT_EQ(result, 42);
     result = either | -1;
     ASSERT_EQ(result, 42);
@@ -47,7 +47,7 @@ TEST(EitherTest, EitherGetOrElseTest) {
     const auto str = "Test";
     auto e = Either<std::exception, const char *>::RightOf(str);
 
-    auto result_str = e.GetOrElse([](auto l) { return "Error!"; });
+    auto result_str = e.GetOrElse([](const auto l) { return "Error!"; });
     ASSERT_STREQ(result_str, str);
     result_str = e | "Error!";
     ASSERT_STREQ(result_str, str);
@@ -74,8 +74,8 @@ TEST(EitherTest, EitherLeftMapTest) {
 
     ASSERT_FALSE(either);
 
-    auto new_either = either.LeftMap([kMessage, kNewMessage](const auto l) {
-        auto msg = l.what();
+    auto new_either = either.LeftMap([kMessage](const auto l) {
+        const auto msg = l.what();
         EXPECT_TRUE(strcmp(msg, kMessage) == 0);
 
         return std::invalid_argument(kNewMessage);
@@ -86,7 +86,7 @@ TEST(EitherTest, EitherLeftMapTest) {
     new_either.When(
             [kNewMessage](const auto l) {
                 EXPECT_EQ(typeid(l), typeid(std::invalid_argument));
-                auto msg = l.what();
+                const auto msg = l.what();
                 EXPECT_TRUE(strcmp(msg, kNewMessage) == 0);
             },
             [](const auto r) {});
@@ -100,7 +100,7 @@ TEST(EitherTest, EitherRightFlatMapTest) {
 
     auto new_either = either.RightFlatMap([kMessage](const auto r) {
         EXPECT_EQ(r, 42);
-        auto str = std::string(kMessage);
+        const auto str = std::string(kMessage);
 
         return Either<std::exception, std::string>::RightOf(str);
     });
@@ -119,10 +119,10 @@ TEST(EitherTest, EitherLeftFlatMapTest) {
 
     auto new_either = either.LeftFlatMap([kMessage, kNewMessage](const auto l) {
         EXPECT_EQ(typeid(l), typeid(std::runtime_error));
-        auto msg = l.what();
+        const auto msg = l.what();
         EXPECT_TRUE(strcmp(msg, kMessage) == 0);
 
-        auto new_l = std::invalid_argument(kNewMessage);
+        const auto new_l = std::invalid_argument(kNewMessage);
 
         return Either<std::invalid_argument, std::string>::LeftOf(new_l);
     });
@@ -132,7 +132,7 @@ TEST(EitherTest, EitherLeftFlatMapTest) {
     new_either.When(
             [kNewMessage](const auto l) {
                 EXPECT_EQ(typeid(l), typeid(std::invalid_argument));
-                auto msg = l.what();
+                const auto msg = l.what();
                 EXPECT_TRUE(strcmp(msg, kNewMessage) == 0);
                 std::exit(0);
             },
@@ -149,7 +149,7 @@ TEST(EitherTest, EitherWhenLeftTest) {
 
     either.WhenLeft([kMessage](const auto l) {
         ASSERT_EQ(typeid(l), typeid(std::runtime_error));
-        auto msg = l.what();
+        const auto msg = l.what();
         ASSERT_STREQ(msg, kMessage);
         std::exit(0);
     });
