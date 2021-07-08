@@ -18,9 +18,6 @@ namespace monad {
         };
 
     public:
-        const Left<nullptr_t> leftEmpty = Left<nullptr_t>{nullptr};
-        const Right<nullptr_t> rightEmpty = Right<nullptr_t>{nullptr};
-
         bool const isLeft = false;
 
         constexpr explicit Either(Left<L> const &l) : left_value{l.value}, isLeft{true} {};
@@ -72,19 +69,19 @@ namespace monad {
 
 
         template<typename LeftF, typename RightF>
-        constexpr void When(LeftF const &leftCase, RightF const &rightCase) {
+        constexpr void When(LeftF const &leftCase, RightF const &rightCase) const {
             isLeft ? leftCase(left_value) : rightCase(right_value);
         }
 
         template<typename F>
-        constexpr void WhenLeft(F const &leftCase) {
+        constexpr void WhenLeft(F const &leftCase) const {
             if (isLeft) {
                 leftCase(left_value);
             }
         }
 
         template<typename F>
-        constexpr void WhenRight(F const &rightCase) {
+        constexpr void WhenRight(F const &rightCase) const {
             if (!isLeft) {
                 rightCase(right_value);
             }
@@ -96,7 +93,7 @@ namespace monad {
             return isLeft ? leftCase(left_value) : right_value;
         }
 
-        constexpr auto operator|(const R value) {
+        constexpr auto operator|(const R value) const {
             return isLeft ? value : right_value;
         }
 
