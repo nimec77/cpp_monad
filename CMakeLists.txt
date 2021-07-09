@@ -18,10 +18,12 @@ set(SRS_LIST main.cpp)
 add_executable(${PROJECT_NAME} ${SRS_LIST})
 
 enable_testing()
+
 set(SRC_TESTS
         test/left_test.cpp
         test/right_test.cpp
         test/either_test.cpp
+        test/create_class_test.cpp
         test/main_test.cpp
         )
 
