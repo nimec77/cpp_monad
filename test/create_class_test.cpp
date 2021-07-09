@@ -5,23 +5,15 @@
 #include <either.h>
 #include <gtest/gtest.h>
 
-HelpClass*  help_class_ptr = nullptr;
-
 class CreateClassTest : public ::testing::Test {
 public:
-    static CreateClassTest *class_test;
-
     static void SetUpTestSuite() {
         std::cout << "SetUpTestSuite" << std::endl;
-        auto either = HelpClass::CreateTestClass(40);
-        either.WhenRight([](auto help_class) {
-           help_class_ptr = &help_class;
-        });
+        HelpClass::CreateTestClass(40);
     }
 
     static void TearDownTestSuite() {
         std::cout << "TearDownTestSuite" << std::endl;
-        help_class_ptr = nullptr;
     }
 
 
@@ -37,14 +29,16 @@ protected:
 private:
 };
 
-TEST_F(CreateClassTest, Test1) {
-    if (help_class_ptr == nullptr) {
-        FAIL();
-    }
-    std::cout << help_class_ptr->add(2) << std::endl;
-    SUCCEED();
-}
+TEST_F(CreateClassTest, GetInstanceTest) {
+    auto instance = HelpClass::GetInstance();
+    ASSERT_TRUE(instance);
 
-TEST_F(CreateClassTest, Test2) {
+    ASSERT_EQ(typeid(instance), typeid(HelpClass::CreateHelpClassType));
+
+    instance.WhenRight([](const auto help_class) {
+        ASSERT_EQ(typeid(help_class), typeid(HelpClass *));
+        auto result = help_class->Add(2);
+        ASSERT_EQ(result, 42);
+    });
     SUCCEED();
 }
