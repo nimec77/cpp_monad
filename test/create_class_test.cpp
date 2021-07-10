@@ -14,6 +14,10 @@ public:
 
     static void TearDownTestSuite() {
         std::cout << "TearDownTestSuite" << std::endl;
+        auto instance = HelpClass::GetInstance();
+        instance.WhenRight([](const auto help_class) {
+            help_class->~HelpClass();
+        });
     }
 
 
