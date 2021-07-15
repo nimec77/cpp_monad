@@ -15,9 +15,9 @@ public:
         std::cout << "~HelpClass:" << secret_value << std::endl;
     }
 
-    using CreateHelpClassType = monad::Either<std::exception, HelpClass *>;
-    static CreateHelpClassType CreateTestClass(int secret_value);
-    static CreateHelpClassType GetInstance();
+    using HelpClassEither = monad::Either<std::exception, HelpClass *>;
+    static HelpClassEither CreateTestClass(int secret_value);
+    static HelpClassEither GetInstance();
 
     [[nodiscard]] int Add(int a) const {
         std::cout << "Add:" << secret_value << " + " << a << std::endl;
@@ -38,21 +38,20 @@ private:
 
 HelpClass *created_test_class = nullptr;
 
-
-HelpClass::CreateHelpClassType HelpClass::CreateTestClass(int secret_value) {
+HelpClass::HelpClassEither HelpClass::CreateTestClass(int secret_value) {
     std::cout << "CreateTestClass:" << secret_value << std::endl;
     if (created_test_class == nullptr) {
         created_test_class = new HelpClass(secret_value);
     }
-    return HelpClass::CreateHelpClassType::RightOf(created_test_class);
+    return HelpClass::HelpClassEither::RightOf(created_test_class);
 }
 
-HelpClass::CreateHelpClassType HelpClass::GetInstance() {
+HelpClass::HelpClassEither HelpClass::GetInstance() {
     if (created_test_class == nullptr) {
         auto exception = std::runtime_error("First you need to create an object of the class");
-        return HelpClass::CreateHelpClassType::LeftOf(exception);
+        return HelpClass::HelpClassEither::LeftOf(exception);
     }
-    return HelpClass::CreateHelpClassType::RightOf(created_test_class);
+    return HelpClass::HelpClassEither::RightOf(created_test_class);
 }
 
 

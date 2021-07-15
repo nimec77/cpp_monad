@@ -32,8 +32,13 @@ TEST(RightTest, CreateRightTest) {
     ASSERT_EQ(typeid(right_class.value), typeid(TestClass));
     ASSERT_EQ(right_class.value.add(), 42);
 
-    auto  str2 = &"Test string";
+    auto  chars = &"Test string";
     auto right_char = monad::right(&"Test string");
-    ASSERT_EQ(typeid(right_char.value), typeid(str2));
-    ASSERT_STREQ(*right_char.value, *str2);
+    ASSERT_EQ(typeid(right_char.value), typeid(chars));
+    ASSERT_STREQ(*right_char.value, *chars);
+
+    auto str2 = "Test string2";
+    auto right_str2 = monad::right(std::string{"Test string2"});
+    ASSERT_EQ(typeid(right_str2.value), typeid(std::string));
+    ASSERT_STREQ(right_str2.value.c_str(), str2);
 }

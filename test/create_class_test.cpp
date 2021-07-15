@@ -37,12 +37,11 @@ TEST_F(CreateClassTest, GetInstanceTest) {
     auto instance = HelpClass::GetInstance();
     ASSERT_TRUE(instance);
 
-    ASSERT_EQ(typeid(instance), typeid(HelpClass::CreateHelpClassType));
+    ASSERT_EQ(typeid(instance), typeid(HelpClass::HelpClassEither));
 
     instance.WhenRight([](const auto help_class) {
         ASSERT_EQ(typeid(help_class), typeid(HelpClass *));
         auto result = help_class->Add(2);
         ASSERT_EQ(result, 42);
     });
-    SUCCEED();
 }
